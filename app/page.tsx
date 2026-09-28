@@ -318,7 +318,7 @@ function Header({ refresh }: { refresh: number }) {
   const notificationReadKey = "bikinlaundry-read-notifications";
   const [showNotifications, setShowNotifications] = useState(false);
   const [showProfile, setShowProfile] = useState(false);
-  const [profile, setProfile] = useState({ name: "", email: "", initials: "U" });
+  const [profile, setProfile] = useState({ name: "", email: "", initials: "U", role: "" });
   const [notifications, setNotifications] = useState<ActivityNotification[]>([]);
   const [deadlineNotifications, setDeadlineNotifications] = useState<DeadlineNotification[]>([]);
   const [readNotificationIds, setReadNotificationIds] = useState<string[]>([]);
@@ -360,7 +360,8 @@ function Header({ refresh }: { refresh: number }) {
         .replace(/[._-]+/g, " ")
         .replace(/\b\w/g, (character) => character.toUpperCase()) || "Pengguna";
       const initials = name.split(/\s+/).filter(Boolean).slice(0, 2).map((part) => part[0]).join("").toUpperCase() || "U";
-      setProfile({ name, email, initials });
+      const role = user.user_metadata?.role === "laundry-biz" ? "Laundry Biz" : user.user_metadata?.role === "project-manager" ? "Project Manager" : "";
+      setProfile({ name, email, initials, role });
     });
   }, []);
 
@@ -441,7 +442,7 @@ function Header({ refresh }: { refresh: number }) {
           </button>
           <div className="hidden sm:block">
             <p className="text-sm font-semibold">{profile.name || "Pengguna"}</p>
-            <p className="text-xs text-muted-foreground">Project Manager</p>
+            <p className="text-xs text-muted-foreground">{profile.role || "User"}</p>
           </div>
           {showProfile && (
             <Card className="absolute right-0 top-12 z-10 w-64 shadow-lg">
@@ -449,7 +450,7 @@ function Header({ refresh }: { refresh: number }) {
                 <div>
                   <p className="text-sm font-semibold">{profile.name || "Pengguna"}</p>
                   <p className="text-xs text-muted-foreground">
-                    Project Manager
+                    {profile.role || "User"}
                   </p>
                 </div>
                 <div className="border-t pt-3 text-xs text-muted-foreground">
